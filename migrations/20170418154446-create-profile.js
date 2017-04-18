@@ -18,22 +18,45 @@ module.exports = {
         type: Sequelize.TEXT
       },
       about: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        validate: {
+          notEmpty: {
+            msg: 'About cannot be empty'
+          }
+        }
       },
       talents: {
-        type: Sequelize.ARRAY
+        type: Sequelize.ARRAY(Sequelize.TEXT)
       },
       favorites: {
-        type: Sequelize.ARRAY
+        type: Sequelize.ARRAY(Sequelize.TEXT)
       },
       whyMe: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        validate: {
+          notEmpty: {
+            msg: 'Why Me cannot be empty'
+          }
+        }
       },
       gender: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        validate: {
+          notEmpty: {
+            msg: 'Gender cannot be empty'
+          }
+        }
       },
       age: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        validate: {
+          notEmpty: {
+            msg: 'Age cannot be empty'
+          },
+          isInt: {
+            msg: 'Age must be an integer'
+          }
+        }
       },
       maritalStatus: {
         type: Sequelize.STRING

@@ -9,10 +9,26 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       username: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        validate: {
+          notEmpty: {
+            msg: 'Username cannot be empty'
+          },
+          isAlphanumeric: {
+            msg: 'Username must only be numbers and letters'
+          }
+        }
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        validate: {
+          isEmail: {
+            msg: 'Must provide a valid email'
+          },
+          notEmpty: {
+            msg: 'Email cannot be empty'
+          }
+        }
       },
       profileId: {
         type: Sequelize.INTEGER

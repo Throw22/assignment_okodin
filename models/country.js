@@ -1,13 +1,19 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var Country = sequelize.define('Country', {
-    name: DataTypes.STRING
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
+  var Country = sequelize.define(
+    'Country',
+    {
+      name: DataTypes.STRING
+    },
+    {
+      classMethods: {
+        associate: function(models) {
+          Country.hasMany(models.Location, {
+            foreignKey: 'country_id'
+          });
+        }
       }
     }
-  });
+  );
   return Country;
 };
