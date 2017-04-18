@@ -1,25 +1,28 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 const url = require('url');
-const server = require("http").createServer(app);
+const server = require('http').createServer(app);
 server.listen(process.env.PORT || 3000);
 
 //-------------------
 // Set up handlebars
 //-------------------
 const helpers = require('./helpers');
-const exphbs = require("express-handlebars");
-app.engine("hbs", exphbs({
-  defaultLayout: "application",
-  partialsDir: 'views/',
-  helpers: helpers.registered,
-  extname: '.hbs' }));
-app.set("view engine", "hbs");
-
+const exphbs = require('express-handlebars');
+app.engine(
+  'hbs',
+  exphbs({
+    defaultLayout: 'application',
+    partialsDir: 'views/',
+    helpers: helpers.registered,
+    extname: '.hbs'
+  })
+);
+app.set('view engine', 'hbs');
 
 // Set up body-parser
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // HTTP method overriding
 app.use((req, res, next) => {
@@ -46,38 +49,37 @@ app.use((req, res, next) => {
 });
 
 // Set up cookie-parser
-const cookieParser = require("cookie-parser");
+const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 // Set up logging with Morgan
 var morgan = require('morgan');
 app.use(morgan('tiny'));
 app.use((req, res, next) => {
-  ['query', 'params', 'body'].forEach((key) => {
+  ['query', 'params', 'body'].forEach(key => {
     if (req[key]) {
       var capKey = key[0].toUpperCase() + key.substr(1);
       var value = JSON.stringify(req[key], null, 2);
-      console.log(`${ capKey }: ${ value }`);
+      console.log(`${capKey}: ${value}`);
     }
   });
   next();
 });
 
 // Set up serving static middleware
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + '/public'));
 
 //-------------------------------
 // Define and initialize sessions
 //-------------------------------
 var session = require('express-session');
 var sess = {
-    secret: 'keyboard cat',
-    cookie: {},
-    resave: false,
-    saveUninitialized: true
+  secret: 'keyboard cat',
+  cookie: {},
+  resave: false,
+  saveUninitialized: true
 };
 app.use(session(sess));
-
 
 // ----------------------
 // Auth redirect
@@ -94,13 +96,11 @@ app.use((req, res, next) => {
   }
 });
 
-
 app.use((req, res, next) => {
   res.locals.session = req.session;
   res.locals.currentUser = req.session.currentUser;
   next();
 });
-
 
 //------------------------
 // Routes
@@ -109,7 +109,6 @@ const index = require('./routes/index');
 const users = require('./routes/users');
 app.use('/', index);
 app.use('/', users);
-
 
 //-----------------------
 // Default route handlers
@@ -130,7 +129,3 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
-
-

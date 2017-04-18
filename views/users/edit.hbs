@@ -16,22 +16,22 @@
 
         <div class="form-group">
           <label for="profile[age]">Age: </label>
-          <input type="text" class="form-control" name="profile[age]" placeholder="{{user.Profile.age}}" />
+          <input type="text" class="form-control" name="profile[age]" value="{{user.Profile.age}}" />
         </div>
 
         <div class="form-group">
           <label for="profile[height]">Height: </label>
-          <input type="text" class="form-control" name="profile[height]" placeholder="{{user.Profile.height}}" />
+          <input type="text" class="form-control" name="profile[height]" value="{{user.Profile.height}}" />
         </div>
 
         <div class="form-group">
           <label for="profile[children]">Number of children: </label>
-          <input type="text" class="form-control" name="profile[children]" placeholder="{{user.Profile.children}}" />
+          <input type="text" class="form-control" name="profile[children]" value="{{user.Profile.children}}" />
         </div>
 
         <div class="form-group">
           <label for="profile[pets]">Pets: </label>
-          <input type="text" class="form-control" name="profile[pets]" placeholder="{{user.Profile.pets}}" />
+          <input type="text" class="form-control" name="profile[pets]" value="{{user.Profile.pets}}" />
         </div>
 
         <div class="btn-group" data-toggle="buttons">
@@ -74,28 +74,33 @@
 
         <div class="form-group">
           <label for="profile[occupation]">Occupation: </label>
-          <input type="text" class="form-control" name="profile[occupation]" placeholder="{{user.Profile.occupation}}" />
-        </div>
-
-        < !-- User Skills -->
-        <div class="form-group">
-          <label for="user_skills_1">Skills</label>
-          <input type="text" id="user_skills_1" name="user[skills][]" class="form-control" value="JavaScript">
+          <input type="text" class="form-control" name="profile[occupation]" value="{{user.Profile.occupation}}" />
         </div>
 
         <div class="form-group">
-          <label for="user_skills_2">Skills</label>
-          <input type="text" id="user_skills_2" name="user[skills][]" class="form-control" value="HTML">
+          <label for="profile[talents][]">Talents</label>
+          {{#each user.Profile.talents as |talent|}}
+          <input type="text" name="profile[talents][]" class="form-control" value="{{talent}}">
+        {{/each}}
+          <input type="text" name="profile[talents][]" class="form-control">
+          <input type="text" name="profile[talents][]" class="form-control">
         </div>
 
         <div class="form-group">
-          <label for="user_skills_3">Skills</label>
-          <input type="text" id="user_skills_3" name="user[skills][]" class="form-control" value="CSS">
+          <label for="profile[favorites][]">Favorites</label>
+          {{#each user.Profile.favorites as |favorite|}}
+          <input type="text" name="profile[favorites][]" class="form-control" value="{{favorite}}">
+        {{/each}}
+          <input type="text" name="profile[favorites][]" class="form-control">
+          <input type="text" name="profile[favorites][]" class="form-control">
         </div>
 
+        <div class="form-group">
+          <label for="profile[whyMe]">Why you should message me: </label>
+          <input type="text" class="form-control" name="profile[whyMe]" value="{{user.Profile.whyMe}}" />
+        </div>
 
         <button class="btn btn-primary" type="submit">Update profile</button>
     </form>
   </div>
 </main>
-

@@ -31,19 +31,48 @@ var onEdit = (req, res) => {
   User.findById(req.params.id, {
     include: [{ all: true, include: [{ all: true, include: [{ all: true }] }] }]
   })
-  .then(user => {
-    if (user) {
-      res.render('users/edit', { user });
-    } else {
-      res.render('/');
-    }
-  })
-  .catch(e => res.status(500).send(e.stack));
+    .then(user => {
+      if (user) {
+        res.render('users/edit', { user });
+      } else {
+        res.render('/');
+      }
+    })
+    .catch(e => res.status(500).send(e.stack));
 };
 
 var onUpdate = (req, res) => {
-  console.log(req.body)
-  res.redirect('/')
+  console.log(req.body);
+  sequelize.transaction(t => {
+    return profile.update({
+      {"profile": {
+    "age": "44",
+    "height": "68",
+    "children": "2",
+    "pets": "7 cats and 8 dogs",
+    "occupation": "Supervisor",
+    "talents": [
+      "Ameliorated incremental implementation",
+      "Business-focused national intranet",
+      "I'll override the mobile SMS hard drive, that should protocol the SSL hard drive!",
+      "",
+      ""
+    ],
+    "favorites": [
+      "Perspiciatis eaque libero asperiores.",
+      "Nemo impedit voluptatum quia earum qui.",
+      "Voluptas asperiores quia laudantium ex fuga consectetur.",
+      "Eius modi soluta nihil aspernatur in.",
+      "",
+      ""
+    ],
+    "whyMe": "rich leverage niches"
+  }
+
+}, { where: (userId : req.body.userId) });
+  });
+
+  res.redirect('/');
 };
 
 router.get('/user/:id', onShow);
