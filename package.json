@@ -21,6 +21,7 @@
   "homepage": "https://github.com/vikingeducation/assignment_okodin#readme",
   "dependencies": {
     "body-parser": "^1.17.1",
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.2",
     "express-handlebars": "^3.0.0",
     "faker": "^4.1.0",
