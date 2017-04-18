@@ -34,6 +34,7 @@ router.post('/sessions', (req, res) => {
         };
         user.update({ lastLogin: new Date() }).then(res.redirect('/'));
       } else {
+        console.log('CREATING USER');
         return Profile.findOrCreate({
           defaults: {},
           where: { userId: req.body.userId },
@@ -41,7 +42,7 @@ router.post('/sessions', (req, res) => {
         })
           .spread(profile => {
             // create user, set current, and redirect
-            return User.insert({
+            return User.create({
               username: username,
               email: email,
               profileId: profile.id,
@@ -50,6 +51,7 @@ router.post('/sessions', (req, res) => {
             });
           })
           .then(user => {
+            console.log('USER ID: ' + user.id);
             res.redirect(`/user/${user.id}`);
           });
       }
