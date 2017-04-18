@@ -27,8 +27,27 @@ var onShow = (req, res) => {
     .catch(e => res.status(500).send(e.stack));
 };
 
-router.get('/user/:id', onShow);
+var onEdit = (req, res) => {
+  User.findById(req.params.id, {
+    include: [{ all: true, include: [{ all: true, include: [{ all: true }] }] }]
+  })
+  .then(user => {
+    if (user) {
+      res.render('users/edit', { user });
+    } else {
+      res.render('/');
+    }
+  })
+  .catch(e => res.status(500).send(e.stack));
+};
 
-router.get('/user:id/edit', onShow);
+var onUpdate = (req, res) => {
+  console.log(req.body)
+  res.redirect('/')
+};
+
+router.get('/user/:id', onShow);
+router.get('/user/:id/edit', onEdit);
+router.put('/users', onUpdate);
 
 module.exports = router;
