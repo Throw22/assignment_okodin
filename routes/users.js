@@ -11,21 +11,24 @@ var h = helpers.registered;
 
 var onShow = (req, res) => {
   User.findById(req.params.id, {
-    include: [
-      { model: Profile }
-    ]
+    include: [{ all: true, include: [{ all: true, include: [{ all: true }] }] }]
   })
-  .then((user) => {
-    if(user) {
-      res.render('users/show', {user})
-    } else {
-      res.render('/');
-    }
-  })
-  .catch((e) => res.status(500).send(e.stack));
+    .then(user => {
+      if (user) {
+        let ownsPage = false;
+        if (req.session.currentUser.id == user.id) {
+          ownsPage = true;
+        }
+        res.render('users/show', { user, ownsPage });
+      } else {
+        res.render('/');
+      }
+    })
+    .catch(e => res.status(500).send(e.stack));
 };
 
 router.get('/user/:id', onShow);
 
+router.get('/user:id/edit', onShow);
 
 module.exports = router;
