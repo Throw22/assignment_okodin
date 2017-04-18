@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const url = require('url');
 const server = require("http").createServer(app);
 server.listen(process.env.PORT || 3000);
 
@@ -62,8 +63,37 @@ app.use((req, res, next) => {
 // Set up serving static middleware
 app.use(express.static(__dirname + "/public"));
 
+// Define and initialize sessions
+var session = require('express-session');
+var sess = {
+    secret: 'keyboard cat',
+    cookie: {},
+    resave: false,
+    saveUninitialized: true
+};
+app.use(session(sess));
+
+//
+// Check that a user is logged in. If not, redirect them to login
+//
+app.use((req, res, next) => {
+  var reqUrl = url.parse(req.url);
+  if (
+    !req.session.currentUser &&
+    !['/login', '/sessions'].includes(reqUrl.pathname)
+  ) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+});
+
+
+
+// Routes
 const index = require('./routes/index');
 app.use('/', index);
+
 
 
 // catch 404 and forward to error handler
