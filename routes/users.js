@@ -6,8 +6,15 @@ var User = models.User;
 var Profile = models.Profile;
 var sequelize = models.sequelize;
 
+var helpers = require('./../helpers');
+var h = helpers.registered;
+
 var onShow = (req, res) => {
-  User.findById(req.params.id)
+  User.findById(req.params.id, {
+    include: [
+      { model: Profile }
+    ]
+  })
   .then((user) => {
     if(user) {
       res.render('users/show', {user})

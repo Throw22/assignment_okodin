@@ -17,7 +17,7 @@ var getLogin = (req, res) => {
 var onLogin = (req, res) => {
   let username = req.body.username;
   let email = req.body.email;
-  let profile;
+  let profile, userId;
 
   sequelize.transaction(t => {
     return User.find({
@@ -34,29 +34,33 @@ var onLogin = (req, res) => {
         };
         user.update({ lastLogin: new Date() }).then(res.redirect('/'));
       } else {
-        console.log('CREATING USER');
-        return Profile.findOrCreate({
-          defaults: {},
-          where: { userId: req.body.userId },
+        return User.create({
+          username: username,
+          email: email,
+          lastLogin: new Date(),
           transaction: t
         })
+        .then((user) => {
+          userId = user.id;
+          return Profile.findOrCreate({
+            defaults: {userId: userId},
+            where: { userId: userId },
+            transaction: t
+          })
+        })
         .spread(profile => {
-          // create user, set current, and redirect
-          return User.create({
-            username: username,
-            email: email,
-            profileId: profile.id,
-            lastLogin: new Date(),
+          return User.update({ profileId: profile.id }, {
+            where: { id: userId },
             transaction: t
           });
         })
-        .then(user => {
+        .then(()=> {
           req.session.currentUser = {
             username: username,
             email: email,
-            id: user.id
+            id: userId
           };
-          res.redirect(`/user/${user.id}`);
+          res.redirect(`/user/${userId}`);
         });
       }
     });
