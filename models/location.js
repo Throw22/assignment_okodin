@@ -4,8 +4,8 @@ module.exports = function(sequelize, DataTypes) {
     'Location',
     {
       city: DataTypes.STRING,
-      state_id: DataTypes.INTEGER,
-      country_id: DataTypes.INTEGER,
+      stateId: DataTypes.INTEGER,
+      countryId: DataTypes.INTEGER,
       zip: DataTypes.STRING,
       distance: DataTypes.INTEGER
     },
@@ -17,11 +17,11 @@ module.exports = function(sequelize, DataTypes) {
           });
 
           Location.belongsTo(models.State, {
-            foreignKey: 'state_id'
+            foreignKey: 'stateId'
           });
 
           Location.belongsTo(models.Country, {
-            foreignKey: 'country_id'
+            foreignKey: 'countryId'
           });
         }
       }

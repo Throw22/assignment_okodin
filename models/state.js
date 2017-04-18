@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
       classMethods: {
         associate: function(models) {
           State.hasMany(models.Location, {
-            foreignKey: 'state_id'
+            foreignKey: 'stateId'
           });
         }
       }

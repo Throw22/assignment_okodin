@@ -11,10 +11,10 @@ module.exports = {
       city: {
         type: Sequelize.STRING
       },
-      state_id: {
+      stateId: {
         type: Sequelize.INTEGER
       },
-      country_id: {
+      countryId: {
         type: Sequelize.INTEGER
       },
       zip: {
