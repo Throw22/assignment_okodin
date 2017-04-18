@@ -25,6 +25,12 @@
         </div>
 
         <div class="form-group">
+          <label for="location[city]">City: </label>
+          <input type="text" class="form-control" name="location[city]" value="{{user.Profile.Location.city}}" />
+        </div>
+
+
+        <div class="form-group">
           <label for="profile[children]">Number of children: </label>
           <input type="text" class="form-control" name="profile[children]" value="{{user.Profile.children}}" />
         </div>
@@ -70,6 +76,11 @@
           <label class="btn btn-default">
             <input type="radio" name="profile[bodyType]" value="5">Barely built at all
           </label>
+        </div>
+
+        <div class="form-group">
+          <label for="profile[about]">About me: </label>
+          <input type="text" class="form-control" name="profile[about]" value="{{user.Profile.about}}" />
         </div>
 
         <div class="form-group">
