@@ -4,14 +4,17 @@ const url = require('url');
 const server = require("http").createServer(app);
 server.listen(process.env.PORT || 3000);
 
+//-------------------
 // Set up handlebars
+//-------------------
+const helpers = require('./helpers');
 const exphbs = require("express-handlebars");
 app.engine("hbs", exphbs({
   defaultLayout: "application",
   partialsDir: 'views/',
+  helpers: helpers.registered,
   extname: '.hbs' }));
 app.set("view engine", "hbs");
-
 
 
 // Set up body-parser
@@ -63,7 +66,9 @@ app.use((req, res, next) => {
 // Set up serving static middleware
 app.use(express.static(__dirname + "/public"));
 
+//-------------------------------
 // Define and initialize sessions
+//-------------------------------
 var session = require('express-session');
 var sess = {
     secret: 'keyboard cat',
@@ -73,9 +78,10 @@ var sess = {
 };
 app.use(session(sess));
 
-//
-// Check that a user is logged in. If not, redirect them to login
-//
+
+// ----------------------
+// Auth redirect
+// ----------------------
 app.use((req, res, next) => {
   var reqUrl = url.parse(req.url);
   if (
@@ -89,13 +95,25 @@ app.use((req, res, next) => {
 });
 
 
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  res.locals.currentUser = req.session.currentUser;
+  next();
+});
 
+
+//------------------------
 // Routes
+//------------------------
 const index = require('./routes/index');
+const users = require('./routes/users');
 app.use('/', index);
+app.use('/', users);
 
 
-
+//-----------------------
+// Default route handlers
+//-----------------------
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

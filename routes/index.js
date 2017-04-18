@@ -6,15 +6,15 @@ var User = models.User;
 var Profile = models.Profile;
 var sequelize = models.sequelize;
 
-router.get('/', (req, res) => {
+var onIndex = (req, res) => {
   res.render('index', { title: 'OKOdin' });
-});
+};
 
-router.get('/login', (req, res) => {
+var getLogin = (req, res) => {
   res.render('login', { title: 'OKOdin' });
-});
+};
 
-router.post('/sessions', (req, res) => {
+var onLogin = (req, res) => {
   let username = req.body.username;
   let email = req.body.email;
   let profile;
@@ -26,7 +26,7 @@ router.post('/sessions', (req, res) => {
       }
     }).then(user => {
       if (user) {
-        // set current user and redirect
+        // update lastLogin and redirect
         req.session.currentUser = {
           username: username,
           email: email,
@@ -40,81 +40,38 @@ router.post('/sessions', (req, res) => {
           where: { userId: req.body.userId },
           transaction: t
         })
-          .spread(profile => {
-            // create user, set current, and redirect
-            return User.create({
-              username: username,
-              email: email,
-              profileId: profile.id,
-              lastLogin: new Date(),
-              transaction: t
-            });
-          })
-          .then(user => {
-            console.log('USER ID: ' + user.id);
-            res.redirect(`/user/${user.id}`);
+        .spread(profile => {
+          // create user, set current, and redirect
+          return User.create({
+            username: username,
+            email: email,
+            profileId: profile.id,
+            lastLogin: new Date(),
+            transaction: t
           });
+        })
+        .then(user => {
+          req.session.currentUser = {
+            username: username,
+            email: email,
+            id: user.id
+          };
+          res.redirect(`/user/${user.id}`);
+        });
       }
     });
   });
+};
 
-  // here, we capture the user input, and:
-  // 1) check if the user exists
-  // 2) If the user does NOT exist:
-  //  2a) redirect them to create a profile (they are filling out a blank profile)
-  // 2) If the user DOES exist:
-  //  2b) redirect them to /
-});
+var onLogout = (req, res) => {
+  req.session.destroy();
+  req.method = 'GET';
+  res.redirect('/login');
+};
+
+router.get('/', onIndex);
+router.get('/login', getLogin);
+router.post('/sessions', onLogin);
+router.delete('/sessions', onLogout);
 
 module.exports = router;
-//
-// var express = require('express');
-// var router = express.Router();
-// var models = require('./../models');
-
-// module.exports = app => {
-//   // Auth
-
-// //   // New
-//   var onNew = (req, res) => {
-//     if (req.session.currentUser) {
-//       res.redirect('/users');
-//     } else {
-//       res.render('sessions/new');
-//     }
-//   };
-//   router.get('/', onNew);
-//   router.get('/login', onNew);
-
-//   // Create
-//   router.post('/sessions', (req, res) => {
-//     User.findOne({
-//       username: req.body.username,
-//       email: req.body.email
-//     })
-//       .then(user => {
-//         if (user) {
-//           req.session.currentUser = {
-//             username: user.username,
-//             email: user.email,
-//             id: user.id,
-//             _id: user._id
-//           };
-//           res.redirect('/users');
-//         } else {
-//           res.redirect('/login');
-//         }
-//       })
-//       .catch(e => res.status(500).send(e.stack));
-//   });
-
-//   // Destroy
-//   var onDestroy = (req, res) => {
-//     req.session.currentUser = null;
-//     res.redirect('/login');
-//   };
-//   router.get('/logout', onDestroy);
-//   router.delete('/logout', onDestroy);
-
-//   return router;
-// };
